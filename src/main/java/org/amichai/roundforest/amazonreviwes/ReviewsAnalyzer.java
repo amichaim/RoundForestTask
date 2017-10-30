@@ -16,14 +16,16 @@ public class ReviewsAnalyzer {
     private int numOfCommentedItems;
     private int numOfWords;
     private String dataFilePath;
+    private int numOfCores;
 
     Dataset<Row> reviews;
 
-    public ReviewsAnalyzer(String dataFilePath, int numOfActiveUsers, int numOfCommentedItems, int numOfWords) {
+    public ReviewsAnalyzer(String dataFilePath, int numOfActiveUsers, int numOfCommentedItems, int numOfWords, int numOfCores) {
         this.dataFilePath = dataFilePath;
         this.numOfActiveUsers = numOfActiveUsers;
         this.numOfCommentedItems = numOfCommentedItems;
         this.numOfWords = numOfWords;
+        this.numOfCores = numOfCores;
     }
 
     public void init() {
@@ -35,6 +37,9 @@ public class ReviewsAnalyzer {
 
         //read raw data
         reviews = spark.read().csv(dataFilePath);
+
+        //repartition to 3 times number of cores - this the recommendation
+        reviews = reviews.repartition(numOfCores * 3);
 
         //drop duplicates when key is productId and userId
         //currently commented out because it cause performance issue
@@ -115,8 +120,9 @@ public class ReviewsAnalyzer {
         int numOfActiveUsers = Integer.parseInt(args[1]);
         int numOfCommentedItems = Integer.parseInt(args[2]);
         int numOfWords = Integer.parseInt(args[3]);
+        int numOfCores = Integer.parseInt(args[4]);
 
-        ReviewsAnalyzer reviewsAnalyzer = new ReviewsAnalyzer(dataFilePath, numOfActiveUsers, numOfCommentedItems, numOfWords);
+        ReviewsAnalyzer reviewsAnalyzer = new ReviewsAnalyzer(dataFilePath, numOfActiveUsers, numOfCommentedItems, numOfWords, numOfCores);
         reviewsAnalyzer.init();
 
         List<String> mostActiveUsers = reviewsAnalyzer.getMostActiveUsers();

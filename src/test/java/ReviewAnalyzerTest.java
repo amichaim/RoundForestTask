@@ -6,9 +6,9 @@ import java.util.List;
 
 public class ReviewAnalyzerTest {
 
-    @Test
+    //@Test
     public void testReviewAnalyzet() {
-        ReviewsAnalyzer reviewsAnalyzer = new ReviewsAnalyzer("C:\\roundforest\\data\\Reviews.csv", 1000, 1000, 1000);
+        ReviewsAnalyzer reviewsAnalyzer = new ReviewsAnalyzer("C:\\roundforest\\data\\Reviews.csv", 1000, 1000, 1000, 2);
         reviewsAnalyzer.init();
 
         List<String> mostActiveUsers = reviewsAnalyzer.getMostActiveUsers();
