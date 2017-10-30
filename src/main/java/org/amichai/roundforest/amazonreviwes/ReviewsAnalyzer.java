@@ -47,7 +47,9 @@ public class ReviewsAnalyzer {
         //reviews = reviews.dropDuplicates("_c1", "_c2");
 
         //cache because we will do few calculations on that dataset
-        reviews.cache();
+        //currently commented out becasue can't work when limit the max heap size to 500m
+        //when run with more memory we can cache
+        //reviews.cache();
     }
 
     public List<String> getMostActiveUsers() {
