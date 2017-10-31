@@ -9,6 +9,7 @@ import scala.collection.JavaConversions;
 import java.util.*;
 
 import static org.apache.spark.sql.functions.desc;
+import static org.apache.spark.sql.functions.hash;
 
 public class ReviewsAnalyzer {
 
@@ -42,14 +43,14 @@ public class ReviewsAnalyzer {
         reviews = reviews.repartition(numOfCores * 3);
 
         //drop duplicates when key is productId and userId
-        //currently commented out because it cause performance issue
-        //todo check how to dropDuplicates with a good performance
-        //reviews = reviews.dropDuplicates("_c1", "_c2");
+        //In my (poor) windows machine, the dropDuplicates caused performance issue,
+        //so I commented out. With stronger Mac there was no problem.
+        reviews = reviews.dropDuplicates("_c1", "_c2");
 
         //cache because we will do few calculations on that dataset
-        //currently commented out becasue can't work when limit the max heap size to 500m
-        //when run with more memory we can cache
-        //reviews.cache();
+        //In my (poor) windows machine I couldn't run this when limit the max heap size to 500m
+        //so I commented out. With stronger Mac there was no problem.
+        reviews.cache();
     }
 
     public List<String> getMostActiveUsers() {
